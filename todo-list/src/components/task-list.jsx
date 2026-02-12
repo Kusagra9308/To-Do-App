@@ -1,23 +1,19 @@
 import { useState, useEffect } from "react";
 
-
 const API = import.meta.env.VITE_API_URL;
-
 
 function Load({ task }) {
   const [tasks, setTasks] = useState([]);
 
-  // 1️⃣ Load tasks from backend
   useEffect(() => {
     fetch(`${API}/tasks`)
       .then(res => res.json())
-      .then(data => setTasks(data))
-      .catch(err => console.error(err));
+      .then(setTasks)
+      .catch(console.error);
   }, []);
 
-  // 2️⃣ Add new task
   useEffect(() => {
-    if (!task || !task.trim()) return;
+    if (!task?.trim()) return;
 
     fetch(`${API}/tasks`, {
       method: "POST",
@@ -30,39 +26,34 @@ function Load({ task }) {
       });
   }, [task]);
 
-  // 3️⃣ Toggle complete
   const toggleComplete = (id) => {
-    fetch(`${API}/tasks/${id}`, {
-      method: "PATCH",
-    })
+    fetch(`${API}/tasks/${id}`, { method: "PATCH" })
       .then(res => res.json())
       .then(updated => {
         setTasks(prev =>
-          prev.map(t => (t.id === id ? updated : t))
+          prev.map(t => (t._id === id ? updated : t))
         );
       });
   };
 
-  // 4️⃣ Delete task
   const deleteTask = (id) => {
-    fetch(`${API}/tasks/${id}`, {
-      method: "DELETE",
-    }).then(() => {
-      setTasks(prev => prev.filter(t => t.id !== id));
-    });
+    fetch(`${API}/tasks/${id}`, { method: "DELETE" })
+      .then(() => {
+        setTasks(prev => prev.filter(t => t._id !== id));
+      });
   };
 
   return (
     <ul className="task-list">
       {tasks.map(task => (
         <li
-          key={task.id}
+          key={task._id}
           className={`task ${task.completed ? "completed" : ""}`}
         >
-          <span onClick={() => toggleComplete(task.id)}>
+          <span onClick={() => toggleComplete(task._id)}>
             {task.text}
           </span>
-          <button onClick={() => deleteTask(task.id)}>×</button>
+          <button onClick={() => deleteTask(task._id)}>×</button>
         </li>
       ))}
     </ul>
