@@ -1,78 +1,59 @@
 const express = require("express");
 const router = express.Router();
 const Task = require("../models/Task");
+const requireAuth = require("../middleware/auth-middleware");
 
-// 🔐 TEMP middleware (remove when real auth is ready)
-router.use((req, res, next) => {
-  // simulate logged-in user
-  req.user = { id: "REPLACE_WITH_USER_ID" };
-  next();
+// 🔐 protect all task routes
+router.use(requireAuth);
+
+// GET tasks for logged-in user
+router.get("/", async (req, res) => {
+  const tasks = await Task.find({
+    user: req.userInfo.userId,
+  }).sort({ createdAt: -1 });
+
+  res.json(tasks);
 });
 
-// Get tasks for logged-in user
-router.get("/tasks", async (req, res) => {
-  try {
-    const tasks = await Task.find({ user: req.user.id }).sort({
-      createdAt: -1,
-    });
-    res.json(tasks);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+// ADD task
+router.post("/", async (req, res) => {
+  if (!req.body.text) {
+    return res.status(400).json({ error: "Task text required" });
   }
+
+  const task = await Task.create({
+    text: req.body.text,
+    user: req.userInfo.userId,
+  });
+
+  res.status(201).json(task);
 });
 
-// Add task for logged-in user
-router.post("/tasks", async (req, res) => {
-  try {
-    if (!req.body.text) {
-      return res.status(400).json({ error: "Task text is required" });
-    }
+// TOGGLE task
+router.patch("/:id", async (req, res) => {
+  const task = await Task.findOne({
+    _id: req.params.id,
+    user: req.userInfo.userId,
+  });
 
-    const task = await Task.create({
-      text: req.body.text,
-      user: req.user.id,
-    });
+  if (!task) return res.sendStatus(404);
 
-    res.status(201).json(task);
-  } catch (err) {
-    console.error("SAVE ERROR:", err.message);
-    res.status(500).json({ error: err.message });
-  }
+  task.completed = !task.completed;
+  await task.save();
+
+  res.json(task);
 });
 
-// Toggle complete (only if task belongs to user)
-router.patch("/tasks/:id", async (req, res) => {
-  try {
-    const task = await Task.findOne({
-      _id: req.params.id,
-      user: req.user.id,
-    });
+// DELETE task
+router.delete("/:id", async (req, res) => {
+  const deleted = await Task.findOneAndDelete({
+    _id: req.params.id,
+    user: req.userInfo.userId,
+  });
 
-    if (!task) return res.sendStatus(404);
+  if (!deleted) return res.sendStatus(404);
 
-    task.completed = !task.completed;
-    await task.save();
-
-    res.json(task);
-  } catch (err) {
-    res.status(400).json({ error: "Invalid task ID" });
-  }
-});
-
-// Delete task (only if owned by user)
-router.delete("/tasks/:id", async (req, res) => {
-  try {
-    const deleted = await Task.findOneAndDelete({
-      _id: req.params.id,
-      user: req.user.id,
-    });
-
-    if (!deleted) return res.sendStatus(404);
-
-    res.sendStatus(204);
-  } catch (err) {
-    res.status(400).json({ error: "Invalid task ID" });
-  }
+  res.sendStatus(204);
 });
 
 module.exports = router;
