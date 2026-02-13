@@ -4,6 +4,7 @@ const generalRou = require("./routes/generalRou");
 require("dotenv").config();
 const connectToDB = require("./database/db");
 const generalRoutes = require("./routes/general");
+const generalRoutes2 = require("./routes/auth");
 
 
 connectToDB();
@@ -16,6 +17,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/", generalRoutes);
+app.use("/api/", generalRoutes2);
 
 app.listen(PORT, () => {
   console.log(`Server is now listeining to PORT ${PORT}`);
