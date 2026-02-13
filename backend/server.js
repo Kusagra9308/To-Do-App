@@ -6,6 +6,7 @@ const generalRoutes = require("./routes/general");
 const generalRoutes2 = require("./routes/auth");
 
 
+
 connectToDB();
 
 const app = express();
