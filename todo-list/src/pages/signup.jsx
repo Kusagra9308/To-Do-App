@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const API = "https://to-do-app-q7ug.onrender.com/api";
@@ -19,7 +19,7 @@ function Signup() {
     try {
       setLoading(true);
 
-      const res = await fetch(`${API}/register`, {
+      const res = await fetch(`${API}/auth/register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, email, password }),
@@ -31,8 +31,13 @@ function Signup() {
         setError(data.message || "Signup failed");
         return;
       }
+console.log("Signup response:", data);
+      // ✅ auto login
+      localStorage.setItem("token", data.accessToken);
+      console.log("Signup response:", data);
 
-      navigate("/login");
+      // ✅ redirect
+      navigate("/dashboard");
     } catch {
       setError("Something went wrong");
     } finally {
@@ -90,7 +95,6 @@ function Signup() {
           border-radius: 8px;
           border: 1px solid #d1d5db;
           outline: none;
-          transition: border 0.15s ease;
         }
 
         .auth-box input:focus {
@@ -107,11 +111,6 @@ function Signup() {
           font-size: 0.9rem;
           font-weight: 500;
           cursor: pointer;
-          transition: opacity 0.15s ease;
-        }
-
-        .auth-box button:hover {
-          opacity: 0.9;
         }
 
         .auth-box button:disabled {
@@ -144,35 +143,35 @@ function Signup() {
 
         <form onSubmit={handleSubmit}>
           <input
-            type="text"
             placeholder="Username"
             value={username}
             onChange={(e) => setUsername(e.target.value)}
+            required
           />
-
           <input
-            type="email"
             placeholder="Email"
+            type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
           />
-
           <input
-            type="password"
             placeholder="Password"
+            type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            required
           />
 
-          {error && <div className="error">{error}</div>}
+          {error && <p className="error">{error}</p>}
 
           <button type="submit" disabled={loading}>
-            {loading ? "Creating account..." : "Sign up"}
+            {loading ? "Creating..." : "Sign up"}
           </button>
         </form>
 
         <div className="auth-footer">
-          Already have an account? <Link to="/login">Login</Link>
+          Already have an account? <a href="/login">Log in</a>
         </div>
       </div>
     </div>

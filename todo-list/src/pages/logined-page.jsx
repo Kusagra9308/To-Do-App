@@ -1,18 +1,31 @@
-import { useState } from "react";
-import Load from "./components/task-list";
-import "./App.css";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import TaskList from "../components/task-list";
 
 function Loginedpage() {
-  const API = "https://to-do-app-q7ug.onrender.com";
+  const navigate = useNavigate();
+
+  // ✅ DEFINE TOKEN HERE
+  const token = localStorage.getItem("token");
+
+  // ⛔ Block access if not logged in
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
+  if (!token) return null; // ⛔ stop render completely
 
   const [input, setInput] = useState("");
   const [taskToAdd, setTaskToAdd] = useState("");
 
-  const onsubmit = () => {
+  const onSubmit = () => {
     if (!input.trim()) return;
     setTaskToAdd(input);
     setInput("");
   };
+
   return (
     <div className="app">
       <h1>Tasks</h1>
@@ -23,11 +36,10 @@ function Loginedpage() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
         />
-        <button onClick={onsubmit}>Add</button>
+        <button onClick={onSubmit}>Add</button>
       </div>
 
-      <h2>List</h2>
-      <Load task={taskToAdd} />
+      <TaskList task={taskToAdd} />
     </div>
   );
 }

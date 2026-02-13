@@ -1,6 +1,46 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+const API = "https://to-do-app-q7ug.onrender.com/api";
 
 function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      // ✅ save token
+      localStorage.setItem("token", data.accessToken);
+      navigate("/dashboard");
+    } catch {
+      setError("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="auth-page">
       <style>{`
@@ -53,7 +93,6 @@ function Login() {
           border-radius: 10px;
           border: 1px solid #e5e7eb;
           outline: none;
-          transition: border 0.15s ease;
         }
 
         .auth-card input:focus {
@@ -78,6 +117,17 @@ function Login() {
           opacity: 0.95;
         }
 
+        .auth-card button:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+
+        .error {
+          font-size: 0.8rem;
+          color: #dc2626;
+          text-align: center;
+        }
+
         .auth-footer {
           margin-top: 20px;
           font-size: 0.8rem;
@@ -94,17 +144,34 @@ function Login() {
 
       <div className="auth-card">
         <h1>Welcome back</h1>
-        <p>Log in to continue managing your tasks</p>
+        <p>Log in to your account</p>
 
-        <form>
-          <input type="email" placeholder="Email" />
-          <input type="password" placeholder="Password" />
+        <form onSubmit={handleSubmit}>
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-          <button type="submit">Login</button>
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          {error && <p className="error">{error}</p>}
+
+          <button type="submit" disabled={loading}>
+            {loading ? "Logging in..." : "Log in"}
+          </button>
         </form>
 
         <div className="auth-footer">
-          Don’t have an account? <Link to="/signup">Sign up</Link>
+          Don’t have an account? <a href="/signup">Sign up</a>
         </div>
       </div>
     </div>
