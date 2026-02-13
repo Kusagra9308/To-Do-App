@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 
-const API = import.meta.env.VITE_API_URL;
-
-if (!API) {
-  throw new Error("VITE_API_URL is not defined");
-}
+const API = "https://to-do-app-q7ug.onrender.com";
 
 function Load({ task }) {
   const [tasks, setTasks] = useState([]);
@@ -54,10 +50,24 @@ function Load({ task }) {
           key={task._id}
           className={`task ${task.completed ? "completed" : ""}`}
         >
-          <span onClick={() => toggleComplete(task._id)}>
-            {task.text}
-          </span>
-          <button onClick={() => deleteTask(task._id)}>×</button>
+          {/* Left: checkbox + text */}
+          <label className="task-left">
+            <input
+              type="checkbox"
+              checked={task.completed}
+              onChange={() => toggleComplete(task._id)}
+            />
+            <span>{task.text}</span>
+          </label>
+
+          {/* Right: delete icon */}
+          <button
+            className="delete-btn"
+            onClick={() => deleteTask(task._id)}
+            aria-label="Delete task"
+          >
+            🗑️
+          </button>
         </li>
       ))}
     </ul>
