@@ -106,16 +106,16 @@ function Loginedpage() {
       `}</style>
 
       <div className="app">
-        <h1>Tasks</h1>
+     
 
-        <div className="input-group">
+        {/* <div className="input-group">
           <input
             placeholder="Add a task"
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
           <button onClick={onSubmit}>Add</button>
-        </div>
+        </div> */}
 
         <TaskList task={taskToAdd} />
       </div>
