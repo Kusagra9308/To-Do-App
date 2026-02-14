@@ -4,13 +4,14 @@ import { useState } from "react";
 const API = "https://to-do-app-q7ug.onrender.com/api";
 
 function Signup() {
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -21,25 +22,39 @@ function Signup() {
 
       const res = await fetch(`${API}/auth/register`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password,
+        }),
       });
 
       const data = await res.json();
+      console.log("Signup response:", data);
 
+      // ❌ Backend error
       if (!res.ok) {
         setError(data.message || "Signup failed");
         return;
       }
-console.log("Signup response:", data);
-      // ✅ auto login
-      localStorage.setItem("token", data.accessToken);
-      console.log("Signup response:", data);
 
-      // ✅ redirect
+      // ❌ Token missing (CRITICAL GUARD)
+      if (!data.accessToken) {
+        setError("Signup succeeded but authentication token was not returned.");
+        return;
+      }
+
+      // ✅ Save token
+      localStorage.setItem("token", data.accessToken);
+
+      // ✅ Redirect ONLY after token is saved
       navigate("/dashboard");
-    } catch {
-      setError("Something went wrong");
+    } catch (err) {
+      console.error(err);
+      setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -148,16 +163,18 @@ console.log("Signup response:", data);
             onChange={(e) => setUsername(e.target.value)}
             required
           />
+
           <input
-            placeholder="Email"
             type="email"
+            placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+
           <input
-            placeholder="Password"
             type="password"
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

@@ -65,50 +65,57 @@ const registerUser = async (req, res) => {
 
 const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
 
-    //find if the current user is exists in database or not
-    const user = await User.findOne({ username });
+    // validate input
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email and password are required",
+      });
+    }
+
+    // find user by email
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: `User doesn't exists`,
+        message: "User does not exist",
       });
     }
-    //if the password is correct or not
+
+    // check password
     const isPasswordMatch = await bcrypt.compare(password, user.password);
 
     if (!isPasswordMatch) {
       return res.status(400).json({
         success: false,
-        message: "Invalid credentials!",
+        message: "Invalid credentials",
       });
     }
 
-    //create user token
+    // create JWT
     const accessToken = jwt.sign(
       {
         userId: user._id,
-        username: user.username,
+        email: user.email,
         role: user.role,
       },
       process.env.JWT_SECRET_KEY,
-      {
-        expiresIn: "30m",
-      },
+      { expiresIn: "30m" }
     );
 
     res.status(200).json({
       success: true,
-      message: "Logged in successful",
-      accessToken,
+      message: "Logged in successfully",
+      token: accessToken, // 👈 IMPORTANT: frontend expects `token`
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     res.status(500).json({
       success: false,
-      message: "Some error occured! Please try again",
+      message: "Some error occurred! Please try again",
     });
   }
 };
