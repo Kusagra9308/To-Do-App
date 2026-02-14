@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 
 const API = "https://to-do-app-q7ug.onrender.com/api";
@@ -22,38 +22,25 @@ function Signup() {
 
       const res = await fetch(`${API}/auth/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, email, password }),
       });
 
       const data = await res.json();
-      console.log("Signup response:", data);
 
-      // ❌ Backend error
       if (!res.ok) {
         setError(data.message || "Signup failed");
         return;
       }
 
-      // ❌ Token missing (CRITICAL GUARD)
       if (!data.accessToken) {
-        setError("Signup succeeded but authentication token was not returned.");
+        setError("Signup succeeded but token was not returned.");
         return;
       }
 
-      // ✅ Save token
       localStorage.setItem("token", data.accessToken);
-
-      // ✅ Redirect ONLY after token is saved
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (err) {
-      console.error(err);
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
@@ -61,134 +48,159 @@ function Signup() {
   };
 
   return (
-    <div className="auth-wrapper">
+    <div className="signup-page">
       <style>{`
         * {
           box-sizing: border-box;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-            sans-serif;
         }
 
-        .auth-wrapper {
+        html, body, #root {
+          height: 100%;
+          margin: 0;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          background: #fafafa;
+        }
+
+        .signup-page {
           min-height: 100vh;
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #f9fafb;
+          padding: 24px;
         }
 
-        .auth-box {
-          width: 380px;
+        .signup-card {
+          width: 100%;
+          max-width: 440px;
           background: #ffffff;
-          padding: 32px;
-          border-radius: 12px;
-          border: 1px solid #e5e7eb;
+          border-radius: 20px;
+          padding: 42px 38px;
+          box-shadow:
+            0 30px 60px rgba(0,0,0,0.12),
+            0 10px 20px rgba(0,0,0,0.06);
         }
 
-        .auth-box h1 {
-          font-size: 1.5rem;
+        .signup-header {
+          margin-bottom: 26px;
+          text-align: center;
+        }
+
+        .signup-header h1 {
+          font-size: 1.9rem;
           margin-bottom: 6px;
-          font-weight: 600;
           color: #111827;
         }
 
-        .auth-box p {
-          font-size: 0.9rem;
+        .signup-header p {
+          font-size: 0.95rem;
           color: #6b7280;
-          margin-bottom: 24px;
         }
 
-        .auth-box form {
+        .form-group {
           display: flex;
           flex-direction: column;
           gap: 14px;
+          margin-bottom: 18px;
         }
 
-        .auth-box input {
-          padding: 12px;
-          font-size: 0.9rem;
-          border-radius: 8px;
+        .form-group input {
+          padding: 14px 16px;
+          font-size: 1rem;
+          border-radius: 12px;
           border: 1px solid #d1d5db;
           outline: none;
         }
 
-        .auth-box input:focus {
-          border-color: #6366f1;
+        .form-group input:focus {
+          border-color: #ef4444;
         }
 
-        .auth-box button {
-          margin-top: 10px;
-          padding: 12px;
-          border-radius: 8px;
+        .signup-btn {
+          width: 100%;
+          padding: 14px;
+          font-size: 1rem;
+          font-weight: 600;
+          border-radius: 14px;
           border: none;
-          background: #6366f1;
-          color: #ffffff;
-          font-size: 0.9rem;
-          font-weight: 500;
+          background: #ef4444;
+          color: white;
           cursor: pointer;
+          margin-top: 6px;
         }
 
-        .auth-box button:disabled {
-          opacity: 0.6;
+        .signup-btn:disabled {
+          opacity: 0.7;
           cursor: not-allowed;
         }
 
         .error {
-          font-size: 0.8rem;
           color: #dc2626;
-        }
-
-        .auth-footer {
-          margin-top: 18px;
-          font-size: 0.8rem;
-          color: #6b7280;
+          font-size: 0.9rem;
+          margin-bottom: 12px;
           text-align: center;
         }
 
-        .auth-footer a {
-          color: #6366f1;
+        .footer {
+          margin-top: 26px;
+          text-align: center;
+          font-size: 0.9rem;
+          color: #6b7280;
+        }
+
+        .footer a {
+          color: #ef4444;
           text-decoration: none;
           font-weight: 500;
         }
+
+        @media (max-width: 480px) {
+          .signup-card {
+            padding: 32px 24px;
+          }
+        }
       `}</style>
 
-      <div className="auth-box">
-        <h1>Create account</h1>
-        <p>Sign up to start managing your tasks</p>
+      <div className="signup-card">
+        <div className="signup-header">
+          <h1>Create account</h1>
+          <p>Sign up to start managing your tasks</p>
+        </div>
+
+        {error && <div className="error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
-          <input
-            placeholder="Username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
+          <div className="form-group">
+            <input
+              placeholder="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
 
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+            <input
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
 
-          {error && <p className="error">{error}</p>}
-
-          <button type="submit" disabled={loading}>
-            {loading ? "Creating..." : "Sign up"}
+          <button className="signup-btn" disabled={loading}>
+            {loading ? "Creating account..." : "Sign up"}
           </button>
         </form>
 
-        <div className="auth-footer">
-          Already have an account? <a href="/login">Log in</a>
+        <div className="footer">
+          Already have an account? <Link to="/login">Log in</Link>
         </div>
       </div>
     </div>

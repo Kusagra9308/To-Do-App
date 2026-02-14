@@ -1,167 +1,289 @@
 import { Link } from "react-router-dom";
-import Login from "./home.jsx";
-import Signup from "./signup";
 
 function Home() {
   return (
     <div className="home">
       <style>{`
-        .home {
-          min-height: 100vh;
+        * {
+          box-sizing: border-box;
+        }
+
+        html, body, #root {
+          margin: 0;
+          padding: 0;
+          height: 100%;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          background: #ffffff;
+        }
+
+        /* NAVBAR */
+        .nav {
+          height: 72px;
+          padding: 0 48px;
           display: flex;
           align-items: center;
-          justify-content: center;
-          background: linear-gradient(180deg, #fafafa, #f3f4f6);
-          padding: 24px;
-          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-            sans-serif;
+          justify-content: space-between;
+          border-bottom: 1px solid #f1f1f1;
         }
 
-        .card {
-          width: 440px;
-          max-width: 100%;
-          background: #ffffff;
-          padding: 40px 34px;
-          border-radius: 18px;
-          box-shadow:
-            0 20px 40px rgba(0, 0, 0, 0.06),
-            0 6px 14px rgba(0, 0, 0, 0.04);
+        .logo {
+          font-size: 1.4rem;
+          font-weight: 700;
+          color: #ef4444;
         }
 
-        .top-bar {
+        .nav-right {
           display: flex;
-          justify-content: flex-end;
-          gap: 10px;
+          align-items: center;
+          gap: 20px;
+        }
+
+        .nav-link {
+          text-decoration: none;
+          color: #374151;
+          font-size: 0.95rem;
+          font-weight: 500;
+        }
+
+        .nav-cta {
+          padding: 10px 18px;
+          border-radius: 12px;
+          background: #ef4444;
+          color: white;
+          text-decoration: none;
+          font-size: 0.95rem;
+          font-weight: 600;
+        }
+
+        /* HERO */
+        .hero {
+          max-width: 1280px;
+          margin: 0 auto;
+          padding: 80px 48px;
+          display: grid;
+          grid-template-columns: 1.1fr 1fr;
+          gap: 64px;
+          align-items: center;
+        }
+
+        .hero-left h1 {
+          font-size: 3.4rem;
+          line-height: 1.1;
+          letter-spacing: -0.04em;
+          color: #111827;
+          margin-bottom: 20px;
+        }
+
+        .hero-left p {
+          font-size: 1.15rem;
+          color: #6b7280;
+          line-height: 1.7;
+          max-width: 520px;
           margin-bottom: 28px;
         }
 
-        .top-btn {
-          padding: 8px 14px;
-          border-radius: 10px;
-          font-size: 0.8rem;
-          text-decoration: none;
-          font-weight: 500;
-          color: #374151;
-          border: 1px solid #e5e7eb;
-          background: #ffffff;
-          transition: background 0.15s ease, border 0.15s ease;
-        }
-
-        .top-btn:hover {
-          background: #f9fafb;
-          border-color: #d1d5db;
-        }
-
-        h1 {
-          font-size: 1.9rem;
-          font-weight: 600;
-          margin-bottom: 14px;
-          letter-spacing: -0.02em;
-          color: #111827;
-          text-align: center;
-        }
-
-        p {
-          font-size: 0.95rem;
-          color: #6b7280;
-          line-height: 1.6;
-          margin-bottom: 32px;
-          text-align: center;
-        }
-
-        .features {
+        .reviews {
           display: flex;
-          justify-content: space-between;
-          margin-bottom: 36px;
-          text-align: center;
-        }
-
-        .feature {
-          display: flex;
-          flex-direction: column;
           align-items: center;
-          gap: 8px;
-          font-size: 0.85rem;
+          gap: 10px;
+          font-size: 0.9rem;
           color: #374151;
+          margin-bottom: 32px;
         }
 
-        .feature span {
-          font-size: 1.6rem;
+        .stars {
+          color: #f59e0b;
+          letter-spacing: 2px;
         }
 
-        .cta {
+        .hero-actions {
           display: flex;
-          justify-content: center;
-          gap: 12px;
+          gap: 16px;
         }
 
-        .start-btn {
-          padding: 14px 26px;
-          border-radius: 14px;
-          background: #6366f1;
-          color: #ffffff;
+        .primary-btn {
+          padding: 16px 32px;
+          border-radius: 16px;
+          background: #ef4444;
+          color: white;
           text-decoration: none;
-          font-size: 0.95rem;
-          font-weight: 500;
-          transition: transform 0.1s ease, box-shadow 0.1s ease;
-        }
-
-        .start-btn:hover {
-          box-shadow: 0 8px 20px rgba(99, 102, 241, 0.35);
+          font-size: 1rem;
+          font-weight: 600;
         }
 
         .secondary-btn {
-          padding: 14px 26px;
-          border-radius: 14px;
-          background: #f9fafb;
+          padding: 16px 32px;
+          border-radius: 16px;
+          background: #ffffff;
           color: #374151;
           text-decoration: none;
-          font-size: 0.95rem;
+          font-size: 1rem;
           font-weight: 500;
           border: 1px solid #e5e7eb;
-          transition: background 0.15s ease;
         }
 
-        .secondary-btn:hover {
-          background: #f3f4f6;
+        /* MOCK APP PREVIEW */
+        .hero-right {
+          background: linear-gradient(180deg, #fff5eb, #fde9dc);
+          border-radius: 28px;
+          padding: 28px;
+          box-shadow:
+            0 40px 80px rgba(0,0,0,0.08),
+            0 10px 24px rgba(0,0,0,0.05);
+        }
+
+        .app-mock {
+          display: flex;
+          background: #ffffff;
+          border-radius: 20px;
+          overflow: hidden;
+          min-height: 420px;
+        }
+
+        .mock-sidebar {
+          width: 38%;
+          background: #f9fafb;
+          padding: 16px;
+          border-right: 1px solid #e5e7eb;
+        }
+
+        .mock-title {
+          font-size: 0.85rem;
+          font-weight: 600;
+          color: #6b7280;
+          margin-bottom: 12px;
+        }
+
+        .mock-item {
+          padding: 8px 10px;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          color: #374151;
+          margin-bottom: 6px;
+        }
+
+        .mock-item.active {
+          background: #fee2e2;
+          color: #b91c1c;
+          font-weight: 500;
+        }
+
+        .mock-content {
+          flex: 1;
+          padding: 20px;
+        }
+
+        .mock-header {
+          font-size: 1.1rem;
+          font-weight: 600;
+          margin-bottom: 16px;
+          color: #111827;
+        }
+
+        .task {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          padding: 8px 0;
+          font-size: 0.95rem;
+          color: #374151;
+        }
+
+        .task input {
+          accent-color: #ef4444;
+        }
+
+        .task .done {
+          text-decoration: line-through;
+          color: #9ca3af;
+        }
+
+        /* MOBILE */
+        @media (max-width: 900px) {
+          .nav {
+            padding: 0 20px;
+          }
+
+          .hero {
+            grid-template-columns: 1fr;
+            padding: 48px 20px;
+            text-align: center;
+          }
+
+          .hero-left h1 {
+            font-size: 2.4rem;
+          }
+
+          .hero-left p {
+            margin-left: auto;
+            margin-right: auto;
+          }
+
+          .hero-actions {
+            justify-content: center;
+            flex-wrap: wrap;
+          }
         }
       `}</style>
 
-      <div className="card">
-        {/* Top right buttons */}
-        <div className="top-bar">
-          <Link to="/login" className="top-btn">Login</Link>
-          <Link to="/signup" className="top-btn">Sign up</Link>
+      {/* NAVBAR */}
+      <div className="nav">
+        <div className="logo">todoist</div>
+        <div className="nav-right">
+          <Link to="/login" className="nav-link">Log in</Link>
+          <Link to="/signup" className="nav-cta">Start for free</Link>
+        </div>
+      </div>
+
+      {/* HERO */}
+      <div className="hero">
+        <div className="hero-left">
+          <h1>Clarity, finally.</h1>
+
+          <p>
+            Join millions of people who simplify work and life with a fast,
+            focused, and beautifully simple to-do list.
+          </p>
+
+          <div className="reviews">
+            <span className="stars">★★★★★</span>
+            <span>374k+ reviews</span>
+          </div>
+
+          <div className="hero-actions">
+            <Link to="/signup" className="primary-btn">Start for free</Link>
+            <Link to="/login" className="secondary-btn">Log in</Link>
+          </div>
         </div>
 
-        <h1>Todo List</h1>
-        <p>
-          A simple, fast, and distraction-free way to manage your tasks and
-          stay productive every day.
-        </p>
+        {/* APP MOCK */}
+        <div className="hero-right">
+          <div className="app-mock">
+            <div className="mock-sidebar">
+              <div className="mock-title">My Projects</div>
+              <div className="mock-item active">Today</div>
+              <div className="mock-item">Upcoming</div>
+              <div className="mock-item">Personal</div>
+              <div className="mock-item">Work</div>
+            </div>
 
-        <div className="features">
-          <div className="feature">
-            <span>✅</span>
-            <div>Organize tasks</div>
-          </div>
-          <div className="feature">
-            <span>⚡</span>
-            <div>Fast workflow</div>
-          </div>
-          <div className="feature">
-            <span>🧠</span>
-            <div>Stay focused</div>
-          </div>
-        </div>
+            <div className="mock-content">
+              <div className="mock-header">Today</div>
 
-        <div className="cta">
-          <Link to="/login" className="start-btn">
-            Start using app
-          </Link>
-          <Link to="/signup" className="secondary-btn">
-            Create account
-          </Link>
+              <div className="task">
+                <input type="checkbox" />
+                <span>Finish UI design</span>
+              </div>
+              <div className="task">
+                <input type="checkbox" defaultChecked />
+                <span className="done">Review pull requests</span>
+              </div>
+              <div className="task">
+                <input type="checkbox" />
+                <span>Plan next sprint</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
