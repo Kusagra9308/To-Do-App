@@ -7,7 +7,7 @@ import Login from "./pages/login";
 import Signup from "./pages/signup";
 import Loginedpage from "./pages/logined-page";
 
-
+import "./index.css";
 
 function App() {
   return (

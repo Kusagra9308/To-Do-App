@@ -224,14 +224,32 @@ function Home() {
             flex-wrap: wrap;
           }
         }
+
+        .footer {
+  margin-top: 140px;
+  padding: 32px 20px;
+  border-top: 1px solid #f1f1f1;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.heart {
+  color: #ef4444;
+}
+
       `}</style>
 
       {/* NAVBAR */}
       <div className="nav">
         <div className="logo">todoist</div>
         <div className="nav-right">
-          <Link to="/login" className="nav-link">Log in</Link>
-          <Link to="/signup" className="nav-cta">Start for free</Link>
+          <Link to="/login" className="nav-link">
+            Log in
+          </Link>
+          <Link to="/signup" className="nav-cta">
+            Start for free
+          </Link>
         </div>
       </div>
 
@@ -251,8 +269,12 @@ function Home() {
           </div>
 
           <div className="hero-actions">
-            <Link to="/signup" className="primary-btn">Start for free</Link>
-            <Link to="/login" className="secondary-btn">Log in</Link>
+            <Link to="/signup" className="primary-btn">
+              Start for free
+            </Link>
+            <Link to="/login" className="secondary-btn">
+              Log in
+            </Link>
           </div>
         </div>
 
@@ -286,6 +308,12 @@ function Home() {
           </div>
         </div>
       </div>
+      <footer className="footer">
+        <p>
+          © {new Date().getFullYear()} Kushagra · Crafted with{" "}
+          <span className="heart">❤</span>
+        </p>
+      </footer>
     </div>
   );
 }

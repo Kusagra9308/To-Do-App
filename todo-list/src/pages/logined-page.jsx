@@ -35,15 +35,14 @@ function Loginedpage() {
 
         /* Full screen app */
         .app {
-          min-height: 100vh;
-          width: 100%;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          background: #f3f4f6;
-          padding: 16px;
-          box-sizing: border-box;
-        }
+  min-height: 100vh;
+  width: 100%;
+  background: #f3f4f6;
+
+  display: flex;
+  justify-content: center; /* center page content */
+  padding: 32px 16px;
+}
 
         h1 {
           margin: 12px 0 20px;
@@ -53,7 +52,7 @@ function Loginedpage() {
         /* Input area */
         .input-group {
           width: 100%;
-          max-width: 520px;
+          // max-width: 520px;
           display: flex;
           gap: 8px;
           margin-bottom: 20px;
@@ -84,7 +83,7 @@ function Loginedpage() {
         /* Make sure task list can scroll on mobile */
         .task-list {
           width: 100%;
-          max-width: 520px;
+          // max-width: 520px;
           flex: 1;
           overflow-y: auto;
         }
@@ -106,8 +105,6 @@ function Loginedpage() {
       `}</style>
 
       <div className="app">
-     
-
         {/* <div className="input-group">
           <input
             placeholder="Add a task"
